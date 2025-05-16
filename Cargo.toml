@@ -1,0 +1,15 @@
+[package]
+name = "rav1d-vs-dav1d-perf"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "main"
+
+[dependencies]
+
+# Same as rav1d
+[profile.release]
+codegen-units = 1
+panic = "abort"
+lto = "fat"

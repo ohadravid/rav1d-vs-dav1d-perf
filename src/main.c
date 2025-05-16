@@ -151,25 +151,25 @@ static void __attribute__ ((noinline)) add_spatial_candidate(refmvs_candidate *c
     }
 }
 
-void __attribute__ ((noinline)) sample(refmvs_candidate* mvstack, int *const cnt, const int weight) {
+void __attribute__ ((noinline)) sample(refmvs_candidate* mvstack, int *const cnt, const int weight, const uint8_t value8, const uint16_t value16) {
     refmvs_block b = {
         .mv = {
-            .mv = {{0, 0}, {0, 0}}
+            .mv = {{value16 - 1, value16 - 1}, {value16 - 1, value16 - 1}}
         },
         .ref = {
-            .ref = {1, -1}
+            .ref = {1 * value8, -1 * value8}
         },
         .bs = BS_128x128,
         .mf = 0
     };
     
     refmvs_refpair ref_pair = {
-        .ref = {1, -1}
+        .ref = {1 * value8, -1 * value8}
     };
     
     mv gmv[2] = {
-        {.y = -32768, .x = -32768},
-        {.y = 0, .x = 0}
+        {.y = -32768 * value16, .x = -32768 * value16},
+        {.y = value16 - 1, .x = value16 - 1}
     };
     
     int have_newmv_match = 0;
@@ -203,10 +203,10 @@ int main(void) {
         return 1;
     }
     
-    for (int i = 0; i < 100000000; i++) {
+    for (int i = 0; i < 300000000; i++) {
         int weight = 192;
         int cnt = 0;
-        sample(mvstack, &cnt, weight);
+        sample(mvstack, &cnt, weight, 1, 1);
     }
     
     // Free the allocated memory

@@ -184,25 +184,25 @@ pub fn add_spatial_candidate(
 }
 
 #[inline(never)]
-pub fn sample(mvstack: &mut [RefMvsCandidate], cnt: &mut usize, weight: i32) {
+pub fn sample(mvstack: &mut [RefMvsCandidate], cnt: &mut usize, weight: i32, value8: i8, value16: i16) {
     let b = RefMvsBlock {
         mv: RefMvsMvPair {
-            mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            mv: [Mv { y: value16 - 1, x: value16 - 1 }, Mv { y: value16 - 1, x: value16 - 1 }],
         },
-        r#ref: RefMvsRefPair { r#ref: [1, -1] },
+        r#ref: RefMvsRefPair { r#ref: [1 * value8, -1 * value8] },
         bs: BlockSize::Bs128x128,
         mf: 0,
     };
-    let r#ref = RefMvsRefPair { r#ref: [1, -1] };
+    let r#ref = RefMvsRefPair { r#ref: [1 * value8, -1 * value8] };
     let gmv = [
         Mv {
-            y: -32768,
-            x: -32768,
+            y: -32768 * value16,
+            x: -32768 * value16,
         },
-        Mv { y: 0, x: 0 },
+        Mv { y: value16 - 1, x: value16 - 1 },
     ];
-    let mut have_newmv_match = 0;
-    let mut have_refmv_match = 0;
+    let mut have_newmv_match = (value8 - 1) as _;
+    let mut have_refmv_match = (value8 - 1) as _;
 
     add_spatial_candidate(
         mvstack,
@@ -268,9 +268,10 @@ pub fn main() {
         },
     ];
 
-    for _ in 0..100000000 {
+    for _ in 0..300000000 {
         let mut cnt = 0;
         let weight = 192;
-        sample(&mut mvstack, &mut cnt, weight);
+        let value = 1;
+        sample(&mut mvstack, &mut cnt, weight, value as _, value as _);
     }
 }

@@ -9,11 +9,15 @@ cargo build --release
 hyperfine --warmup 2 ./target/release/main
 ```
 
+```bash
+cargo build --release && hyperfine --warmup 2 ./target/release/main
+```
+
 Initial results are:
 
 ```
-C - 1.409 s ±  0.027 s
-Rust - 1.489 s ±  0.025 s
+C - 692.8 ms ±   7.7 m
+Rust - 740.0 ms ±  20.1 ms
 ```
 
 Full dav1d build command from ninja:

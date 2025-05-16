@@ -268,7 +268,7 @@ fn sample() {
 }
 
 fn main() {
-    for _ in 0..1000000000i64 {
+    for _ in 0..500000000i64 {
         sample();
     }
 }

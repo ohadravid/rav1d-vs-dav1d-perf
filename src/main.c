@@ -245,7 +245,7 @@ void sample(void) {
 }
 
 int main(void) {
-    for (long long i = 0; i < 1000000000LL; i++) {
+    for (long long i = 0; i < 500000000LL; i++) {
         sample();
     }
     return 0;

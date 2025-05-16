@@ -150,7 +150,7 @@ static void add_spatial_candidate(refmvs_candidate *const mvstack, int *const cn
     }
 }
 
-void sample() {
+void sample(void) {
     refmvs_candidate mvstack[8] = {
         {
             .mv = {
@@ -244,7 +244,7 @@ void sample() {
     asm volatile("" : : "r"(mvstack) : "memory");
 }
 
-int main() {
+int main(void) {
     for (long long i = 0; i < 1000000000LL; i++) {
         sample();
     }

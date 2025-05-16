@@ -1,4 +1,4 @@
-use std::{hint::black_box, mem};
+use std::mem;
 
 #[repr(u8)]
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
@@ -99,6 +99,7 @@ pub struct RefMvsCandidate {
     pub mv: RefMvsMvPair,
     pub weight: i32,
 }
+
 
 #[inline(never)]
 pub fn add_spatial_candidate(
@@ -213,8 +214,6 @@ pub fn sample(mvstack: &mut [RefMvsCandidate], cnt: &mut usize, weight: i32) {
         &mut have_newmv_match,
         &mut have_refmv_match,
     );
-
-    black_box(mvstack);
 }
 
 pub fn main() {
@@ -269,9 +268,9 @@ pub fn main() {
         },
     ];
 
-    for _ in 0..500000000i64 {
-        let mut cnt = black_box(0);
-        let weight = black_box(192);
+    for _ in 0..100000000 {
+        let mut cnt = 0;
+        let weight = 192;
         sample(&mut mvstack, &mut cnt, weight);
     }
 }

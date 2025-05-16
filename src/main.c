@@ -152,10 +152,6 @@ static void __attribute__ ((noinline)) add_spatial_candidate(refmvs_candidate *c
 }
 
 void __attribute__ ((noinline)) sample(refmvs_candidate* mvstack, int *const cnt, const int weight) {
-    // Equivalent to black_box in Rust (prevents compiler optimization)
-    // In C, this might be implemented with volatile or compiler-specific directives
-    asm volatile("" : : "r"(mvstack) : "memory");
-
     refmvs_block b = {
         .mv = {
             .mv = {{0, 0}, {0, 0}}
@@ -189,10 +185,6 @@ void __attribute__ ((noinline)) sample(refmvs_candidate* mvstack, int *const cnt
         &have_newmv_match,
         &have_refmv_match
     );
-
-    // Equivalent to black_box in Rust (prevents compiler optimization)
-    // In C, this might be implemented with volatile or compiler-specific directives
-    asm volatile("" : : "r"(mvstack) : "memory");
 }
 
 int main(void) {
@@ -211,7 +203,7 @@ int main(void) {
         return 1;
     }
     
-    for (long long i = 0; i < 500000000LL; i++) {
+    for (int i = 0; i < 100000000; i++) {
         int weight = 192;
         int cnt = 0;
         sample(mvstack, &cnt, weight);

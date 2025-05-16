@@ -100,7 +100,8 @@ pub struct RefMvsCandidate {
     pub weight: i32,
 }
 
-fn add_spatial_candidate(
+#[inline(never)]
+pub fn add_spatial_candidate(
     mvstack: &mut [RefMvsCandidate],
     cnt: &mut usize,
     weight: i32,
@@ -181,59 +182,8 @@ fn add_spatial_candidate(
     }
 }
 
-fn sample() {
-    let mut mvstack = [
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-        RefMvsCandidate {
-            mv: RefMvsMvPair {
-                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
-            },
-            weight: 0,
-        },
-    ];
-    let mut cnt = 0;
-    let weight = 192;
+#[inline(never)]
+pub fn sample(mvstack: &mut [RefMvsCandidate], cnt: &mut usize, weight: i32) {
     let b = RefMvsBlock {
         mv: RefMvsMvPair {
             mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
@@ -254,8 +204,8 @@ fn sample() {
     let mut have_refmv_match = 0;
 
     add_spatial_candidate(
-        &mut mvstack,
-        &mut cnt,
+        mvstack,
+        cnt,
         weight,
         b,
         r#ref,
@@ -267,8 +217,61 @@ fn sample() {
     black_box(mvstack);
 }
 
-fn main() {
+pub fn main() {
+    let mut mvstack = vec![
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+        RefMvsCandidate {
+            mv: RefMvsMvPair {
+                mv: [Mv { y: 0, x: 0 }, Mv { y: 0, x: 0 }],
+            },
+            weight: 0,
+        },
+    ];
+
     for _ in 0..500000000i64 {
-        sample();
+        let mut cnt = black_box(0);
+        let weight = black_box(192);
+        sample(&mut mvstack, &mut cnt, weight);
     }
 }

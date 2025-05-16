@@ -1,6 +1,7 @@
 
 
 #include <stdint.h>
+#include <stdlib.h>
 
 #ifdef _MSC_VER
 #define ALIGN(ll, a) \
@@ -94,7 +95,7 @@ typedef struct refmvs_candidate {
 } refmvs_candidate;
 
 
-static void add_spatial_candidate(refmvs_candidate *const mvstack, int *const cnt,
+static void __attribute__ ((noinline)) add_spatial_candidate(refmvs_candidate *const mvstack, int *const cnt,
                                   const int weight, const refmvs_block *const b,
                                   const union refmvs_refpair ref, const mv gmv[2],
                                   int *const have_newmv_match,
@@ -150,61 +151,11 @@ static void add_spatial_candidate(refmvs_candidate *const mvstack, int *const cn
     }
 }
 
-void sample(void) {
-    refmvs_candidate mvstack[8] = {
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        },
-        {
-            .mv = {
-                .mv = {{0, 0}, {0, 0}}
-            },
-            .weight = 0
-        }
-    };
-    
-    int cnt = 0;
-    int weight = 192;
-    
+void __attribute__ ((noinline)) sample(refmvs_candidate* mvstack, int *const cnt, const int weight) {
+    // Equivalent to black_box in Rust (prevents compiler optimization)
+    // In C, this might be implemented with volatile or compiler-specific directives
+    asm volatile("" : : "r"(mvstack) : "memory");
+
     refmvs_block b = {
         .mv = {
             .mv = {{0, 0}, {0, 0}}
@@ -230,7 +181,7 @@ void sample(void) {
 
     add_spatial_candidate(
         mvstack,
-        &cnt,
+        cnt,
         weight,
         &b,
         ref_pair,
@@ -245,8 +196,28 @@ void sample(void) {
 }
 
 int main(void) {
-    for (long long i = 0; i < 500000000LL; i++) {
-        sample();
+    // Allocate mvstack once on the heap
+    refmvs_candidate* mvstack = (refmvs_candidate*)malloc(8 * sizeof(refmvs_candidate));
+    for (int i = 0; i < 8; i++) {
+        mvstack[i].mv.mv[0].x = 0;
+        mvstack[i].mv.mv[0].y = 0;
+        mvstack[i].mv.mv[1].x = 0;
+        mvstack[i].mv.mv[1].y = 0;
+        mvstack[i].weight = 0;
     }
+    
+    // Check if allocation was successful
+    if (mvstack == NULL) {
+        return 1;
+    }
+    
+    for (long long i = 0; i < 500000000LL; i++) {
+        int weight = 192;
+        int cnt = 0;
+        sample(mvstack, &cnt, weight);
+    }
+    
+    // Free the allocated memory
+    free(mvstack);
     return 0;
 }
